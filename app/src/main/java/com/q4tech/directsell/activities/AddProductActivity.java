@@ -2,13 +2,17 @@ package com.q4tech.directsell.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.GridLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,16 +21,15 @@ import android.widget.TextView;
 import com.q4tech.directsell.R;
 import com.q4tech.directsell.dialogs.ImageSourceDialog;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by alex.perez on 28/07/2016.
  */
-public class AddProductActivity extends CustomActivity implements NestedScrollView.OnScrollChangeListener,ImageSourceDialog.ImageSourceListener {
+public class AddProductActivity extends CustomActivity implements NestedScrollView.OnScrollChangeListener, ImageSourceDialog.ImageSourceListener {
 
     private final static int DESCRIPTION_CODE = 101;
     private static final int REQUEST_CAMERA = 102;
@@ -38,8 +41,10 @@ public class AddProductActivity extends CustomActivity implements NestedScrollVi
     private TextView mDescription;
     private View mHeader;
     private ImageView productImage;
+    private GridLayout gridLayout;
 
     private int currentAlpha;
+    private String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,11 +57,13 @@ public class AddProductActivity extends CustomActivity implements NestedScrollVi
 
         mDescription = (TextView) findViewById(R.id.description);
 
+        gridLayout = (GridLayout) findViewById(R.id.images_grid);
+
         mActionBarBackgroundDrawable = mToolBar.getBackground();
         mActionBarBackgroundDrawable.setAlpha(0);
 
-//        NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.details_scroll_view);
-//        scrollView.setOnScrollChangeListener(this);
+        NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.details_scroll_view);
+        scrollView.setOnScrollChangeListener(this);
 
         findViewById(R.id.description).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +84,8 @@ public class AddProductActivity extends CustomActivity implements NestedScrollVi
                 dialog.show(transaction, getClass().toString());
             }
         });
+
+        setImages();
     }
 
     @Override
@@ -138,26 +147,26 @@ public class AddProductActivity extends CustomActivity implements NestedScrollVi
     }
 
     private void onCaptureImageResult(Intent data) {
-        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+//        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//        thumbnail.compress(Bitmap.CompressFormat.JPEG, 0, bytes);
 
-        File destination = new File(Environment.getExternalStorageDirectory(),
-                System.currentTimeMillis() + ".jpg");
-
-        FileOutputStream fo;
-        try {
-            destination.createNewFile();
-            fo = new FileOutputStream(destination);
-            fo.write(bytes.toByteArray());
-            fo.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        productImage.setImageBitmap(thumbnail);
+//        File destination = new File(Environment.getExternalStorageDirectory(),
+//                System.currentTimeMillis() + ".jpg");
+//
+//        FileOutputStream fo;
+//        try {
+//            destination.createNewFile();
+//            fo = new FileOutputStream(destination);
+//            fo.write(bytes.toByteArray());
+//            fo.close();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        Bitmap myBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+        productImage.setImageBitmap(myBitmap);
     }
 
 
@@ -172,6 +181,44 @@ public class AddProductActivity extends CustomActivity implements NestedScrollVi
     @Override
     public void takePhoto() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, REQUEST_CAMERA);
+        try {
+            File imageFile = createImageFile();
+            Uri photoURI = FileProvider.getUriForFile(this,
+                    "com.q4tech.directsell.fileprovider",
+                    imageFile);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(intent, REQUEST_CAMERA);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        mCurrentPhotoPath = image.getAbsolutePath();
+
+        return image;
+    }
+
+    private void setImages() {
+//        View availableView = getLayoutInflater().inflate(R.layout.add_image_view, gridLayout, false);
+//        GridLayout.LayoutParams param =new GridLayout.LayoutParams();
+//        param.height = GridLayout.LayoutParams.WRAP_CONTENT;
+//        param.width = GridLayout.LayoutParams.WRAP_CONTENT;
+//        param.columnSpec = GridLayout.spec(0);
+//        param.rowSpec = GridLayout.spec(0);
+//        availableView.setLayoutParams (param);
+//        gridLayout.addView(availableView);
+//        TextView availableString = (TextView) availableView.findViewById(R.id.images_available);
+//        availableString.setText(getResources().getQuantityString(R.plurals.images_available, 4, 4));
     }
 }

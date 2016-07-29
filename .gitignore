@@ -41,3 +41,4 @@ captures/
 *.jks
 
 local.properties
+.idea/misc.xml

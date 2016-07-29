@@ -18,14 +18,14 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/no_image"
-            android:textSize="18sp" />
+            android:textSize="@dimen/default_text_size" />
     </FrameLayout>
 
     <TextView
         android:id="@+id/content"
-        style="@style/BoldFont"
+        style="@style/RegularFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:textSize="18sp" />
+        android:textSize="@dimen/default_text_size" />
 </LinearLayout>

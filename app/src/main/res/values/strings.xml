@@ -12,4 +12,9 @@
     <string name="pick_source">Elija una opción</string>
     <string name="take_picture">Tomar foto</string>
     <string name="open_gallery">Abrir galería</string>
+    <string name="images">Imágenes</string>
+    <plurals name="images_available">
+        <item quantity="one">%d disponible</item>
+        <item quantity="other">%d disponibles</item>
+    </plurals>
 </resources>

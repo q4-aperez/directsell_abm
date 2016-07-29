@@ -13,7 +13,7 @@
         android:padding="10dp"
         android:text="@string/pick_source"
         android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:textSize="@dimen/default_text_size" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
             android:foreground="?android:selectableItemBackground"
             android:padding="15dp"
             android:text="@string/take_picture"
-            android:textSize="18sp" />
+            android:textSize="@dimen/default_text_size" />
 
         <TextView
             android:id="@+id/gallery_button"
@@ -42,7 +42,7 @@
             android:foreground="?android:selectableItemBackground"
             android:padding="15dp"
             android:text="@string/open_gallery"
-            android:textSize="18sp" />
+            android:textSize="@dimen/default_text_size" />
     </LinearLayout>
 
 </LinearLayout>
