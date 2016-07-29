@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Direct Sell</string>
+    <string name="title_product_detail">Detalle</string>
+    <string name="search_hint">Buscar productos</string>
+    <string name="no_image">Sin\nimágen</string>
+    <string name="no_image_2">Sin imágen</string>
+    <string name="name">Nombre</string>
+    <string name="no_name">Sin nombre</string>
+    <string name="description">Descripción</string>
+    <string name="no_description">Sin descripción</string>
+    <string name="enter_text">Ingrese el texto</string>
+    <string name="pick_source">Elija una opción</string>
+    <string name="take_picture">Tomar foto</string>
+    <string name="open_gallery">Abrir galería</string>
+</resources>
