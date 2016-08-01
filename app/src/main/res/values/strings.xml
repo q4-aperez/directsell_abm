@@ -17,4 +17,5 @@
         <item quantity="one">%d disponible</item>
         <item quantity="other">%d disponibles</item>
     </plurals>
+    <string name="add_product">Agregar producto</string>
 </resources>

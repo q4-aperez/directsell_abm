@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
@@ -38,6 +37,7 @@ public class ProductListActivity extends CustomActivity implements SimpleItemRec
     private boolean mTwoPane;
     private RecyclerView mRecyclerView;
     private Toolbar mToolbar;
+    private View fadeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,19 +47,12 @@ public class ProductListActivity extends CustomActivity implements SimpleItemRec
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ProductListActivity.this, AddProductActivity.class);
-                startActivity(intent);
-            }
-        });
-
         mRecyclerView = (RecyclerView) findViewById(R.id.product_list);
         mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration((int) getResources().getDimension(R.dimen.text_margin)));
         assert mRecyclerView != null;
         setupRecyclerView();
+
+        fadeView = findViewById(R.id.fade_view);
 
         if (findViewById(R.id.product_detail_container) != null) {
             // The detail container view will be present only in the
@@ -111,6 +104,7 @@ public class ProductListActivity extends CustomActivity implements SimpleItemRec
 
     private void searchProducts(String query) {
         mRecyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS, this, query));
+        fadeView.setVisibility(View.GONE);
     }
 
     @Override
@@ -127,17 +121,30 @@ public class ProductListActivity extends CustomActivity implements SimpleItemRec
         MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
+                fadeView.setVisibility(View.VISIBLE);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 //Reiniciar listado al salir de la busqueda
+                fadeView.setVisibility(View.GONE);
                 setupRecyclerView();
                 return true;
             }
         });
 
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add:
+                Intent intent = new Intent(ProductListActivity.this, AddProductActivity.class);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
